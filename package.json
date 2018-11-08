@@ -1,0 +1,28 @@
+{
+  "name": "statusbot",
+  "version": "1.0.0",
+  "description": "status tracker bot",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  },
+  "devDependencies": {},
+  "author": "GiraffeSummer",
+  "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GiraffeSummer/Statusbot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "status"
+  ],
+  "bugs": {
+    "url": "https://github.com/GiraffeSummer/Statusbot/issues"
+  },
+  "homepage": "https://github.com/GiraffeSummer/Statusbot#readme"
+}
