@@ -153,10 +153,16 @@ client.on('message', msg => {
       break;
 
     case "restart":
-      console.log(msg);
-      setTimeout(function () {
-        process.exit()
-      }, 1000);
+      if (msg.member.user.id == "151039550234296320") {
+        var em = {
+          title: "**RESTARTING**",
+          color: 0xe00707
+        }
+        SendEmbed(em);
+        setTimeout(function () {
+          process.exit()
+        }, 1000);
+      }
       break;
 
     case "trackme":
@@ -191,7 +197,6 @@ function SendEmbed(emb) {
 }
 
 function CheckServer(server) {
-  // var server.id = server.id;
   if (!servers.hasOwnProperty(server.id)) {
     NewServerboard(server);
   }
@@ -201,7 +206,6 @@ function CheckServer(server) {
 function NewServerboard(server) {
   let newserverdata = newServer;
   newserverdata.name = server.name;
-  // newserverdata.statusChannel = server.channels[0];
 
   servers[server.id] = newserverdata;
 
@@ -220,10 +224,8 @@ function SaveJson(json, location) {
   try {
     data = JSON.stringify(json, null, 4);
   } catch (error) {
-    // data = Flatted.stringify(json,null,4);//JSON.stringify(json, null, 4);
     data = safeJsonStringify(json, null, 4);
   }
-  //let data = Flatted.stringify(json);//JSON.stringify(json, null, 4);
   fs.writeFileSync(location, data);
 }
 
@@ -231,16 +233,6 @@ function LoadJson(location) {
   let rawdata = fs.readFileSync(location);
   let loadData = JSON.parse(rawdata);
   return loadData;
-}
-function Flatten(object) {
-  let data;
-  try {
-    data = JSON.stringify(object, null, 4);
-    return JSON.parse(data);
-  } catch (error) {
-    data = safeJsonStringify(object, null, 4);
-    return JSON.parse(data);
-  }
 }
 
 client.login(auth.token);
