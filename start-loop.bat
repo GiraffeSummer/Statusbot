@@ -1,5 +1,5 @@
 @echo off
-set ttl=tester_bot
+set ttl=Status_bot
 set /a repeat=0
 goto loop
 
