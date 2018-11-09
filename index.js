@@ -9,9 +9,13 @@ var prefix = ">";
 var servers;
 var newServer = LoadJson("./data/newserver.json");
 
+var invLink;
+
 client.on('ready', () => {
+  invLink = `https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=8`;
   servers = LoadJson("./data/servers.json");
   console.log(`Logged in as ${client.user.tag}!`);
+  console.log(`Invite link: ${invLink}`);
 });
 
 
@@ -67,7 +71,7 @@ function FilterGame(event) {
 
 
 
-        if (game.assets === null) {
+        if (game.assets === null || game.assets === undefined) {
           var em = {
             title: "**" + user.username + "**",
             description: "**" + game.name + "**",
@@ -154,6 +158,7 @@ client.on('message', msg => {
 
     case "restart":
       if (msg.member.user.id == "151039550234296320") {
+        msg.delete();
         var em = {
           title: "**RESTARTING**",
           color: 0xe00707
@@ -167,6 +172,19 @@ client.on('message', msg => {
 
     case "trackme":
       msg.reply('tracking');
+      break;
+
+    case "invite":
+      var avatarlink = client.users.get(client.user.id).avatarURL;
+      var em = {
+        title: "**Click here to invite me.**",
+        url: invLink,
+        color: 0x0000ff,
+        image: {
+          url: `${avatarlink}?size=256`
+        }
+      }
+      msg.author.send({ embed: em })
       break;
 
     case "track":
