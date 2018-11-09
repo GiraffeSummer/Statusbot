@@ -13,9 +13,6 @@ var newServer = {
   statusChannel: ""
 }
 
-var ms = -1;
-var chanID = -1;
-
 client.on('ready', () => {
   servers = LoadJson("./data/servers.json");
   console.log(`Logged in as ${client.user.tag}!`);
@@ -34,7 +31,6 @@ client.on("raw", (event) => {
     console.log("---Presence Changed!--");
     var user = client.users.get(event.d.user.id);
     console.log(user.username);
-    // console.log(game);
     if (!user.bot)
       FilterGame(event);
   }
@@ -44,7 +40,7 @@ function FilterGame(event) {
   var game = event.d.game;
   var user = client.users.get(event.d.user.id);
   var server = client.guilds.find(val => val.id === event.d.guild_id);
-
+  if (user.bot) return;
   if (servers[server.id].statusChannel != "" && servers[server.id].statusChannel !== null) {
     var channel = client.channels.find(obj => {
       return obj.id === servers[server.id].statusChannel
