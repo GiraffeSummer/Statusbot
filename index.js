@@ -281,9 +281,10 @@ function SaveJson(json, location) {
 }
 
 function LoadJson(location) {
+  if (!fs.existsSync(location)) fs.writeFileSync(location, "{}");
   let rawdata = fs.readFileSync(location);
   let loadData = JSON.parse(rawdata);
   return loadData;
 }
-
+//Created by GiraffeSummer
 client.login(auth.token);
