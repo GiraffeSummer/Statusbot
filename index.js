@@ -141,7 +141,7 @@ client.on('message', msg => {
   var cmd = args[0];
   args = args.splice(1);
   if (msg.toString()[0] != prefix) return;
-
+  console.log(ReturnTime() + ` ${msg.member.user.username}: ` + msg.toString());
   function FullArgs() {
     return msg.replace(prefix + cmd, "");
   }
@@ -171,7 +171,18 @@ client.on('message', msg => {
       break;
 
     case "trackme":
-      msg.reply('tracking');
+      if (!servers.hasOwnProperty(client.guilds.get(msg.guild.id).id)) {
+        var em = {
+          title: "this server doesn't have a statuschannel yet `>statuschannel`",
+          color: 3447003
+        }
+        SendEmbed(em);
+        return;
+      }
+      var cnl = client.channels.find(obj => {
+        return obj.id === servers[client.guilds.get(msg.guild.id).id].statusChannel
+      });
+      cnl.send('Tracking <@' + msg.author.id + ">")
       break;
 
     case "invite":
@@ -188,9 +199,21 @@ client.on('message', msg => {
       break;
 
     case "track":
+      if (!servers.hasOwnProperty(client.guilds.get(msg.guild.id).id)) {
+        var em = {
+          title: "this server doesn't have a statuschannel yet `>statuschannel`",
+          color: 3447003
+        }
+        SendEmbed(em);
+        return;
+      }
+      var cnl = client.channels.find(obj => {
+        return obj.id === servers[client.guilds.get(msg.guild.id).id].statusChannel
+      });
+
       if (msg.mentions.users.first() !== undefined && msg.mentions.users.first() !== null) {
-        msg.channel.send('Tracking <@' + msg.mentions.users.first().id + ">")
-      } else msg.reply('tracking');
+        cnl.send('Tracking <@' + msg.mentions.users.first().id + ">")
+      } else cnl.send('Tracking <@' + msg.author.id + ">")
       break;
 
     case "statuschannel":
@@ -236,6 +259,14 @@ function Reserver(server) {
   servers = LoadJson("./data/servers.json");
 }
 
+function ReturnTime() {
+  var date = new Date();
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  if (hours < 10) { hours = "0" + hours; }
+  if (minutes < 10) { minutes = "0" + minutes; }
+  return "[" + hours + ":" + minutes + "] "
+}
 
 function SaveJson(json, location) {
   let data;
