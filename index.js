@@ -1,8 +1,20 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const auth = require('./auth.json');
 var fs = require('fs');
 const safeJsonStringify = require('safe-json-stringify');
+
+try {
+  if (!fs.existsSync("./auth.json")) {throw new Error("Cannot find auth.json file")};
+  const auth = require('./auth.json');
+  if (auth.token == "your token") { console.log("Enter your token please!"); }
+} catch (error) {
+  if (!fs.existsSync("./auth.json")) {
+  var newAuth = { token: "your token" };
+  SaveJson(newAuth, "auth.json");
+  const auth = require('./auth.json');
+  console.log("Created auth.json file for you! Enter your token please!");
+  }
+}
 
 var prefix = ">";
 

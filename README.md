@@ -9,9 +9,4 @@ It's work in progress.
 
 contact me for any suggestions or feedback.
 
-If you use it, don't forget to create a `auth.json` file with 
-```
-{
-    "token": "your token here"
-}
-```
+On your first run it will automatically create the `auth.json` file for you, please input your bot token there.
