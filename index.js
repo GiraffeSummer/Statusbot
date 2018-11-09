@@ -25,15 +25,14 @@ client.on("raw", (event) => {
   }
   if (event.t == "PRESENCE_UPDATE") {
     CheckServer(client.guilds.find(val => val.id === event.d.guild_id));
-
+    var user = client.users.get(event.d.user.id);
+    if (user.bot) return;
     var game = event.d;
 
     console.log("---Presence Changed!--");
-    var user = client.users.get(event.d.user.id);
     console.log(user.username);
     //SaveJson(game, "./game.txt");
-    if (!user.bot)
-      FilterGame(event);
+    FilterGame(event);
   }
 });
 
@@ -99,7 +98,7 @@ function FilterGame(event) {
           return;
         }
         //
-        
+
         for (let index = 0; index < objs.length; index++) {
           if (objs[index].includes("text")) {
             var objValue = game.assets[objs[index]];
@@ -137,8 +136,15 @@ client.on('message', msg => {
       }
       SendEmbed(em);
       break;
+
     case "trackme":
       msg.reply('tracking');
+      break;
+
+    case "track":
+      if (msg.mentions.users.first() !== undefined && msg.mentions.users.first() !== null) {
+        msg.channel.send('Tracking <@' + msg.mentions.users.first().id + ">")
+      } else msg.reply('tracking');
       break;
 
     case "statuschannel":
