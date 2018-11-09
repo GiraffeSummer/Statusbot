@@ -4,7 +4,8 @@
   "description": "status tracker bot",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^11.4.2"
+    "discord.js": "^11.4.2",
+    "safe-json-stringify": "^1.2.0"
   },
   "devDependencies": {},
   "author": "GiraffeSummer",
