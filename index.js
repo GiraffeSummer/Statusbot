@@ -31,6 +31,7 @@ client.on("raw", (event) => {
     console.log("---Presence Changed!--");
     var user = client.users.get(event.d.user.id);
     console.log(user.username);
+    //SaveJson(game, "./game.txt");
     if (!user.bot)
       FilterGame(event);
   }
@@ -76,8 +77,29 @@ function FilterGame(event) {
             color: 0x5cad00
           }
           ms.edit(`<@${user.id}>`, { embed: em });
-
+          return;
         }
+
+        //ravenfield MP
+        if (game.id == "3613d0e181093534") {
+          console.log("RFMP");
+          var obj = game;
+          if (true /*Check if in game if obj.assets exists*/) {
+            var score = obj.assets.large_text.split(" : ");
+            text = "-Mode: " + obj.state + "\n-Map: " + obj.assets.small_text.replace("Playing on ", "") + "\n-Username: " + score[0] + "\n-Score: " + score[1];
+          } else {
+            text = "-Mode: " + obj.state + "\n-State: " + obj.assets.details;
+          }
+          var em = {
+            title: "**" + user.username + "**",
+            description: "**" + game.name + "**\n" + text,
+            color: 0x5cad00
+          }
+          ms.edit(`<@${user.id}>`, { embed: em });
+          return;
+        }
+        //
+        
         for (let index = 0; index < objs.length; index++) {
           if (objs[index].includes("text")) {
             var objValue = game.assets[objs[index]];
