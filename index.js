@@ -7,7 +7,7 @@ const safeJsonStringify = require('safe-json-stringify');
 var prefix = ">";
 
 var servers;
-var newServer = LoadJson("./data/newserver.json");
+var newServer = require("./data/newserver.json");
 
 var invLink;
 
@@ -21,6 +21,7 @@ client.on('ready', () => {
 
 client.on("raw", (event) => {
   if (event.t == "ready") {
+    servers = LoadJson("./data/servers.json");
     CheckServer(client.guilds.find(val => val.id === event.d.guild_id));
   }
   if (event.t == "PRESENCE_UPDATE") {
@@ -34,7 +35,9 @@ client.on("raw", (event) => {
     FilterGame(event);
   }
 });
-
+client.on("guildCreate", (guild) => {
+  CheckServer(guild);
+});
 function FilterGame(event) {
   var game = event.d.game;
   var user = client.users.get(event.d.user.id);
@@ -94,12 +97,11 @@ function FilterGame(event) {
           ms.edit(`<@${user.id}>`, { embed: em });
           return;
         }
-
         //ravenfield MP
-        if (game.id == "3613d0e181093534") {
+        if (game.name.includes("Ravenfield Multiplayer")) {
           console.log("RFMP");
           var obj = game;
-          if (true /*Check if in game if obj.assets exists*/) {
+          if (obj.hasOwnProperty("assets")) {
             var score = obj.assets.large_text.split(" : ");
             text = "-Mode: " + obj.state + "\n-Map: " + obj.assets.small_text.replace("Playing on ", "") + "\n-Username: " + score[0] + "\n-Score: " + score[1];
           } else {
@@ -254,7 +256,7 @@ function NewServerboard(server) {
   servers = LoadJson("./data/servers.json");
 }
 function Reserver(server) {
-  //servers[server.id].name = server.name;
+  servers[server.id].name = server.name;
   SaveJson(servers, "./data/servers.json");
   servers = LoadJson("./data/servers.json");
 }
