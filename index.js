@@ -7,11 +7,7 @@ const safeJsonStringify = require('safe-json-stringify');
 var prefix = ">";
 
 var servers;
-var newServer = {
-  name: "",
-  prefix: ">",
-  statusChannel: ""
-}
+var newServer = LoadJson("./data/newserver.json");
 
 client.on('ready', () => {
   servers = LoadJson("./data/servers.json");
@@ -28,7 +24,6 @@ client.on("raw", (event) => {
     var user = client.users.get(event.d.user.id);
     if (user.bot) return;
     var game = event.d;
-
     console.log("---Presence Changed!--");
     console.log(user.username);
     //SaveJson(game, "./game.txt");
@@ -49,10 +44,13 @@ function FilterGame(event) {
     channel.fetchMessages()
       .then(msgs => {
         messages = msgs;
-        var ms = msgs.find(obj => {
-          if (obj.mentions.users.first() === undefined) { return null; }
-          return obj.mentions.users.first().id === user.id;
+        var ms = msgs.find(msg => {
+          if (msg.mentions.users.first() === undefined) { return null; }
+          if (msg.author.id == client.user.id) {
+            return msg.mentions.users.first().id === user.id;
+          }
         });
+
         if (ms === undefined || ms === null) return;
         console.log("FOUND");
         if (game === null) {
@@ -66,6 +64,20 @@ function FilterGame(event) {
           return;
         }
         var text = "";
+
+
+
+        if (game.assets === null) {
+          var em = {
+            title: "**" + user.username + "**",
+            description: "**" + game.name + "**",
+            color: 0x5cad00
+          }
+          ms.edit(`<@${user.id}>`, { embed: em });
+          return;
+        }
+
+
         var objs = Object.getOwnPropertyNames(game.assets);
         if (game.id == "spotify:1") {
           var obj = game;
@@ -107,11 +119,14 @@ function FilterGame(event) {
         }
         var em = {
           title: "**" + user.username + "**",
-          description: game.name + "\n" + text,
+          description: "**" + game.name + "**\n" + text,
           color: 0x5cad00
         }
         ms.edit(`<@${user.id}>`, { embed: em });
-      });
+      })
+      .catch((reason) => {
+        console.log(reason);
+      })
   }
 }
 
@@ -135,6 +150,13 @@ client.on('message', msg => {
         color: 3447003
       }
       SendEmbed(em);
+      break;
+
+    case "restart":
+      console.log(msg);
+      setTimeout(function () {
+        process.exit()
+      }, 1000);
       break;
 
     case "trackme":

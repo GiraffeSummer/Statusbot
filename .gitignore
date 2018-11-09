@@ -6,6 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 auth.json*
 data/*
+!data/newserver.json
+debug/*
 
 # Runtime data
 pids
