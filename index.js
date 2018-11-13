@@ -2,17 +2,17 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 var fs = require('fs');
 const safeJsonStringify = require('safe-json-stringify');
-
+var auth;
 try {
-  if (!fs.existsSync("./auth.json")) {throw new Error("Cannot find auth.json file")};
-  const auth = require('./auth.json');
+  if (!fs.existsSync("./auth.json")) { throw new Error("Cannot find auth.json file") };
+  /*const */auth = require('./auth.json');
   if (auth.token == "your token") { console.log("Enter your token please!"); }
 } catch (error) {
   if (!fs.existsSync("./auth.json")) {
-  var newAuth = { token: "your token" };
-  SaveJson(newAuth, "auth.json");
-  const auth = require('./auth.json');
-  console.log("Created auth.json file for you! Enter your token please!");
+    var newAuth = { token: "your token" };
+    SaveJson(newAuth, "auth.json");
+  /*const*/ auth = require('./auth.json');
+    console.log("Created auth.json file for you! Enter your token please!");
   }
 }
 
@@ -249,6 +249,10 @@ client.on('message', msg => {
 
 function SendEmbed(emb) {
   message.channel.send({ embed: emb });
+}
+
+function SaveDebug(data, filename) {
+  SaveJson(data, `./debug/${filename}.json`);
 }
 
 function CheckServer(server) {
