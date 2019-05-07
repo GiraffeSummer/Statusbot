@@ -133,6 +133,21 @@ function FilterGame(event) {
           return;
         }
         //
+
+        //Visual Studio Code
+        if (game.name == "Visual Studio Code") {
+          var obj = game;
+          text = "-" + obj.details + "\n-" + obj.state;
+          var em = {
+            title: "**" + user.username + "**",
+            description: "**" + game.name + "**\n" + text,
+            color: statColor
+          }
+          ms.edit(`<@${user.id}>`, { embed: em });
+          return;
+        }
+        //
+
         var objs = Object.getOwnPropertyNames(game.assets);
         for (let index = 0; index < objs.length; index++) {
           if (objs[index].includes("text")) {
@@ -146,6 +161,10 @@ function FilterGame(event) {
           color: statColor
         }
         ms.edit(`<@${user.id}>`, { embed: em });
+
+
+        SaveGame(game, game.name);
+
       })
       .catch((reason) => {
         console.log(reason);
@@ -259,6 +278,14 @@ function SendEmbed(emb) {
 function SaveDebug(data, filename) {
   SaveJson(data, `./debug/${filename}.json`);
 }
+
+function SaveGame(data, filename) {
+  if (!fs.existsSync(`./games/${filename}.json`)) {
+    SaveJson(data, `./games/${filename}.json`);
+    console.log(filename + "- was saved")
+  }
+}
+
 
 function CheckServer(server) {
   if (!servers.hasOwnProperty(server.id)) {

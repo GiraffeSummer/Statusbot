@@ -1,0 +1,18 @@
+{
+    "type": 0,
+    "timestamps": {
+        "start": 1557266944082
+    },
+    "state": "Workspace: No workspace.",
+    "name": "Visual Studio Code",
+    "id": "9e6e9471ccc8ba18",
+    "details": "Editing index.js",
+    "created_at": 1557266944505,
+    "assets": {
+        "small_text": "Visual Studio Code",
+        "small_image": "565945770067623946",
+        "large_text": "Editing a JS file",
+        "large_image": "565944799576719366"
+    },
+    "application_id": "383226320970055681"
+}
