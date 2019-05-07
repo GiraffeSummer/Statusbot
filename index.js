@@ -13,6 +13,7 @@ try {
     SaveJson(newAuth, "auth.json");
   /*const*/ auth = require('./auth.json');
     console.log("Created auth.json file for you! Enter your token please!");
+    process.exit()
   }
 }
 
@@ -22,6 +23,9 @@ var servers;
 var newServer = require("./data/newserver.json");
 
 var invLink;
+
+//in order:  Online,  idle, do not disturb, streaming,  offline
+const statusColor = [0x31B983, 0xFF9918, 0xFA424B, 0x544388, 0x767D7E];
 
 client.on('ready', () => {
   invLink = `https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=8`;
@@ -70,13 +74,15 @@ function FilterGame(event) {
           }
         });
 
+        var statColor = getStatusColor(event.d.status);
+
         if (ms === undefined || ms === null) return;
         console.log("FOUND");
         if (game === null) {
           var em = {
             title: "**" + user.username + "**",
             description: "**None**",
-            color: 0x5cad00
+            color: statColor
           }
           ms.edit(`<@${user.id}>`, { embed: em });
 
@@ -90,21 +96,20 @@ function FilterGame(event) {
           var em = {
             title: "**" + user.username + "**",
             description: "**" + game.name + "**",
-            color: 0x5cad00
+            color: statColor
           }
           ms.edit(`<@${user.id}>`, { embed: em });
           return;
         }
 
-
-        var objs = Object.getOwnPropertyNames(game.assets);
+        //spotify
         if (game.id == "spotify:1") {
           var obj = game;
           text = "-Artist: " + obj.state + "\n-Song: " + obj.details + "\n-Album: " + obj.assets.large_text;
           var em = {
             title: "**" + user.username + "**",
             description: "**" + game.name + "**\n" + text,
-            color: 0x5cad00
+            color: statColor
           }
           ms.edit(`<@${user.id}>`, { embed: em });
           return;
@@ -122,13 +127,13 @@ function FilterGame(event) {
           var em = {
             title: "**" + user.username + "**",
             description: "**" + game.name + "**\n" + text,
-            color: 0x5cad00
+            color: statColor
           }
           ms.edit(`<@${user.id}>`, { embed: em });
           return;
         }
         //
-
+        var objs = Object.getOwnPropertyNames(game.assets);
         for (let index = 0; index < objs.length; index++) {
           if (objs[index].includes("text")) {
             var objValue = game.assets[objs[index]];
@@ -138,7 +143,7 @@ function FilterGame(event) {
         var em = {
           title: "**" + user.username + "**",
           description: "**" + game.name + "**\n" + text,
-          color: 0x5cad00
+          color: statColor
         }
         ms.edit(`<@${user.id}>`, { embed: em });
       })
@@ -294,6 +299,28 @@ function SaveJson(json, location) {
     data = safeJsonStringify(json, null, 4);
   }
   fs.writeFileSync(location, data);
+}
+
+function getStatusColor(status) {
+  switch (status) {
+    case "online":
+      return statusColor[0];
+
+    case "idle":
+      return statusColor[1];
+
+    case "dnd":
+      return statusColor[2];
+
+    case "streaming":
+      return statusColor[3];
+
+    case "offline":
+      return statusColor[4];
+
+    default:
+      return statusColor[0];
+  }
 }
 
 function LoadJson(location) {
