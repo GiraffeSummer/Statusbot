@@ -106,12 +106,7 @@ function FilterGame(event) {
         if (game.id == "spotify:1") {
           var obj = game;
           text = "-Artist: " + obj.state + "\n-Song: " + obj.details + "\n-Album: " + obj.assets.large_text;
-          var em = {
-            title: "**" + user.username + "**",
-            description: "**" + game.name + "**\n" + text,
-            color: statColor
-          }
-          ms.edit(`<@${user.id}>`, { embed: em });
+          DefaultSend(ms, user, game, text, statColor);
           return;
         }
         //ravenfield MP
@@ -124,12 +119,7 @@ function FilterGame(event) {
           } else {
             text = "-Mode: " + obj.state + "\n-State: " + obj.assets.details;
           }
-          var em = {
-            title: "**" + user.username + "**",
-            description: "**" + game.name + "**\n" + text,
-            color: statColor
-          }
-          ms.edit(`<@${user.id}>`, { embed: em });
+          DefaultSend(ms, user, game, text, statColor);
           return;
         }
         //
@@ -138,12 +128,17 @@ function FilterGame(event) {
         if (game.name == "Visual Studio Code") {
           var obj = game;
           text = "-" + obj.details + "\n-" + obj.state;
-          var em = {
-            title: "**" + user.username + "**",
-            description: "**" + game.name + "**\n" + text,
-            color: statColor
-          }
-          ms.edit(`<@${user.id}>`, { embed: em });
+          DefaultSend(ms, user, game, text, statColor);
+          return;
+        }
+        //
+
+        //Slime Rancher
+        if (game.name == "Slime Rancher") {
+          var obj = game;
+          text = "-" + obj.details;
+          if (obj.state !== undefined) text += "\n-" + obj.state;
+          DefaultSend(ms, user, game, text, statColor);
           return;
         }
         //
@@ -172,6 +167,14 @@ function FilterGame(event) {
   }
 }
 
+function DefaultSend(ms, user, game, text, color) {
+  var em = {
+    title: "**" + user.username + "**",
+    description: "**" + game.name + "**\n" + text,
+    color: color
+  }
+  ms.edit(`<@${user.id}>`, { embed: em });
+}
 
 client.on('message', msg => {
 
