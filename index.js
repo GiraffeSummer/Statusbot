@@ -104,20 +104,18 @@ function FilterGame(event) {
 
         //spotify
         if (game.id == "spotify:1") {
-          var obj = game;
-          text = "-Artist: " + obj.state + "\n-Song: " + obj.details + "\n-Album: " + obj.assets.large_text;
+          text = "-Artist: " + game.state + "\n-Song: " + game.details + "\n-Album: " + game.assets.large_text;
           DefaultSend(ms, user, game, text, statColor);
           return;
         }
         //ravenfield MP
         if (game.name.includes("Ravenfield Multiplayer")) {
           console.log("RFMP");
-          var obj = game;
-          if (obj.hasOwnProperty("assets")) {
-            var score = obj.assets.large_text.split(" : ");
-            text = "-Mode: " + obj.state + "\n-Map: " + obj.assets.small_text.replace("Playing on ", "") + "\n-Username: " + score[0] + "\n-Score: " + score[1];
+          if (game.hasOwnProperty("assets")) {
+            var score = game.assets.large_text.split(" : ");
+            text = "-Mode: " + game.state + "\n-Map: " + game.assets.small_text.replace("Playing on ", "") + "\n-Username: " + score[0] + "\n-Score: " + score[1];
           } else {
-            text = "-Mode: " + obj.state + "\n-State: " + obj.assets.details;
+            text = "-Mode: " + game.state + "\n-State: " + game.assets.details;
           }
           DefaultSend(ms, user, game, text, statColor);
           return;
@@ -126,8 +124,7 @@ function FilterGame(event) {
 
         //Visual Studio Code
         if (game.name == "Visual Studio Code") {
-          var obj = game;
-          text = "-" + obj.details + "\n-" + obj.state;
+          text = "-" + game.details + "\n-" + game.state;
           DefaultSend(ms, user, game, text, statColor);
           return;
         }
@@ -135,9 +132,8 @@ function FilterGame(event) {
 
         //Slime Rancher
         if (game.name == "Slime Rancher") {
-          var obj = game;
-          text = "-" + obj.details;
-          if (obj.state !== undefined) text += "\n-" + obj.state;
+          text = "-" + game.details;
+          if (game.state !== undefined) text += "\n-" + game.state;
           DefaultSend(ms, user, game, text, statColor);
           return;
         }
@@ -153,7 +149,8 @@ function FilterGame(event) {
         var em = {
           title: "**" + user.username + "**",
           description: "**" + game.name + "**\n" + text,
-          color: statColor
+          color: statColor,
+          thumbnail: GetImageUrl(game)
         }
         ms.edit(`<@${user.id}>`, { embed: em });
 
@@ -167,11 +164,30 @@ function FilterGame(event) {
   }
 }
 
+function GetImageUrl(game) {
+  var url = `https://cdn.discordapp.com/app-assets/${game.application_id}/`;
+  var asset = undefined;
+  for (let i = 0; i < Object.getOwnPropertyNames(game.assets).length; i++) {
+
+    if (Object.getOwnPropertyNames(game.assets)[i].includes("image")) {
+      asset = game.assets[Object.getOwnPropertyNames(game.assets)[i]];
+    }
+
+    if (i === Object.getOwnPropertyNames(game.assets).length - 1)
+      if (asset === undefined)
+        return asset;
+      else
+        return { url: url + `${asset}.png` }
+  }
+}
+
 function DefaultSend(ms, user, game, text, color) {
+  img = GetImageUrl(game)
   var em = {
     title: "**" + user.username + "**",
     description: "**" + game.name + "**\n" + text,
-    color: color
+    color: color,
+    thumbnail: img
   }
   ms.edit(`<@${user.id}>`, { embed: em });
 }
