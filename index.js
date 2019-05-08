@@ -44,10 +44,7 @@ client.on("raw", (event) => {
     CheckServer(client.guilds.find(val => val.id === event.d.guild_id));
     var user = client.users.get(event.d.user.id);
     if (user.bot) return;
-    var game = event.d;
-    console.log("---Presence Changed!--");
-    console.log(user.username);
-    //SaveJson(game, "./game.txt");
+    console.log(`Presence Changed! -- [${user.username}]`);
     FilterGame(event);
   }
 });
@@ -73,11 +70,10 @@ function FilterGame(event) {
             return msg.mentions.users.first().id === user.id;
           }
         });
-
-        var statColor = getStatusColor(event.d.status);
-
         if (ms === undefined || ms === null) return;
         console.log("FOUND");
+
+        var statColor = getStatusColor(event.d.status);
         if (game === null) {
           var em = {
             title: "**" + user.username + "**",
@@ -104,6 +100,7 @@ function FilterGame(event) {
 
         //spotify
         if (game.id == "spotify:1") {
+          SaveGame(game, game.name);
           text = "-Artist: " + game.state + "\n-Song: " + game.details + "\n-Album: " + game.assets.large_text;
           DefaultSend(ms, user, game, text, statColor);
           return;
@@ -120,7 +117,6 @@ function FilterGame(event) {
           DefaultSend(ms, user, game, text, statColor);
           return;
         }
-        //
 
         //Visual Studio Code
         if (game.name == "Visual Studio Code") {
@@ -128,7 +124,6 @@ function FilterGame(event) {
           DefaultSend(ms, user, game, text, statColor);
           return;
         }
-        //
 
         //Slime Rancher
         if (game.name == "Slime Rancher") {
@@ -137,8 +132,8 @@ function FilterGame(event) {
           DefaultSend(ms, user, game, text, statColor);
           return;
         }
-        //
 
+        //
         var objs = Object.getOwnPropertyNames(game.assets);
         for (let index = 0; index < objs.length; index++) {
           if (objs[index].includes("text")) {
@@ -167,8 +162,10 @@ function FilterGame(event) {
 function GetImageUrl(game) {
   var url = `https://cdn.discordapp.com/app-assets/${game.application_id}/`;
   var asset = undefined;
-  for (let i = 0; i < Object.getOwnPropertyNames(game.assets).length; i++) {
 
+  if (game.id == "spotify:1") return { url: `https://i.scdn.co/image/${game.assets.large_image.split(':')[1]}` };
+
+  for (let i = 0; i < Object.getOwnPropertyNames(game.assets).length; i++) {
     if (Object.getOwnPropertyNames(game.assets)[i].includes("image")) {
       asset = game.assets[Object.getOwnPropertyNames(game.assets)[i]];
     }
@@ -177,7 +174,7 @@ function GetImageUrl(game) {
       if (asset === undefined)
         return asset;
       else
-        return { url: url + `${asset}.png` }
+        return { url: url + `${asset}.png` };
   }
 }
 
@@ -204,15 +201,6 @@ client.on('message', msg => {
   }
 
   switch (cmd.toLowerCase()) {
-    case "test":
-      var d = client.guilds.get(msg.guild.id);
-      var em = {
-        title: d.name,
-        color: 3447003
-      }
-      SendEmbed(em);
-      break;
-
     case "restart":
       if (msg.member.user.id == "151039550234296320") {
         msg.delete();
