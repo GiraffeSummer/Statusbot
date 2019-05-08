@@ -100,7 +100,6 @@ function FilterGame(event) {
 
         //spotify
         if (game.id == "spotify:1") {
-          SaveGame(game, game.name);
           text = "-Artist: " + game.state + "\n-Song: " + game.details + "\n-Album: " + game.assets.large_text;
           DefaultSend(ms, user, game, text, statColor);
           return;
