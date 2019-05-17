@@ -72,8 +72,12 @@ function FilterGame(event) {
         });
         if (ms === undefined || ms === null) return;
         console.log("FOUND");
-
-        var statColor = getStatusColor(event.d.status);
+        var statColor;
+        try {
+          if (event.d.game.type == 1)
+            getStatusColor("streaming")
+          else statColor = getStatusColor(event.d.status);
+        } catch (error) { statColor = getStatusColor(event.d.status); }
         if (game === null) {
           var em = {
             title: "**" + user.username + "**",
@@ -134,6 +138,8 @@ function FilterGame(event) {
 
         //
         var objs = Object.getOwnPropertyNames(game.assets);
+        if (game.details !== undefined && game.details != "") text += "-" + game.details;
+        if (game.state !== undefined && game.state != "") text += "\n-" + game.state + "\n";
         for (let index = 0; index < objs.length; index++) {
           if (objs[index].includes("text")) {
             var objValue = game.assets[objs[index]];
@@ -147,7 +153,6 @@ function FilterGame(event) {
           thumbnail: GetImageUrl(game)
         }
         ms.edit(`<@${user.id}>`, { embed: em });
-
 
         SaveGame(game, game.name);
 
