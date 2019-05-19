@@ -135,6 +135,7 @@ function FilterGame(event) {
           DefaultSend(ms, user, game, text, statColor);
           return;
         }
+        
 
         //
         var objs = Object.getOwnPropertyNames(game.assets);

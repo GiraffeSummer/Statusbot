@@ -1,0 +1,15 @@
+{
+    "type": 0,
+    "timestamps": {
+        "start": 1558296032000
+    },
+    "state": "Petting cows",
+    "name": "Forager",
+    "id": "d70adb1f7a328cd7",
+    "details": "Feats: 3",
+    "created_at": 1558296278048,
+    "assets": {
+        "large_image": "566036735323013120"
+    },
+    "application_id": "530541618504269875"
+}
