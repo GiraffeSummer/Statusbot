@@ -135,7 +135,7 @@ function FilterGame(event) {
           DefaultSend(ms, user, game, text, statColor);
           return;
         }
-        
+
 
         //
         var objs = Object.getOwnPropertyNames(game.assets);
@@ -155,8 +155,8 @@ function FilterGame(event) {
         }
         ms.edit(`<@${user.id}>`, { embed: em });
 
+        if (event.d.game.type !== 1)
         SaveGame(game, game.name);
-
       })
       .catch((reason) => {
         console.log(reason);
