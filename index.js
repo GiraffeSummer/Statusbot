@@ -32,6 +32,14 @@ client.on('ready', () => {
   servers = LoadJson("./data/servers.json");
   console.log(`Logged in as ${client.user.tag}!`);
   console.log(`Invite link: ${invLink}`);
+
+  client.user.setStatus('away')
+    client.user.setPresence({
+        game: {
+            name: 'your status.',
+            type: "Watching"
+        }
+    });
 });
 
 
