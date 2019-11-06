@@ -99,11 +99,7 @@ function FilterGame(event) {
           return;
         }
         var text = "";
-
-        if (user.id == "151039550234296320") {
-          SaveGame(event.d, "custom4")
-        }
-
+        
         if (game.assets === null || game.assets === undefined) {
           let custom = event.d.activities.find((act) => { return act.type === 4 })
           if (custom) {
