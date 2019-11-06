@@ -34,6 +34,13 @@ client.on('ready', () => {
   console.log(`Invite link: ${invLink}`);
 
 
+  client.user.setStatus('away')
+    client.user.setPresence({
+        game: {
+            name: 'your status.',
+            type: "Watching"
+        }
+    });
 });
 
 
