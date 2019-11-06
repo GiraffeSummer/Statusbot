@@ -32,6 +32,8 @@ client.on('ready', () => {
   servers = LoadJson("./data/servers.json");
   console.log(`Logged in as ${client.user.tag}!`);
   console.log(`Invite link: ${invLink}`);
+
+
 });
 
 
@@ -39,6 +41,7 @@ client.on("raw", (event) => {
   if (event.t == "ready") {
     servers = LoadJson("./data/servers.json");
     CheckServer(client.guilds.find(val => val.id === event.d.guild_id));
+    client.user.setPresence({ game: { name: 'nameGoesHere', type: 4, state: "Hey" } });
   }
   if (event.t == "PRESENCE_UPDATE") {
     CheckServer(client.guilds.find(val => val.id === event.d.guild_id));
@@ -78,6 +81,7 @@ function FilterGame(event) {
             getStatusColor("streaming")
           else statColor = getStatusColor(event.d.status);
         } catch (error) { statColor = getStatusColor(event.d.status); }
+
         if (game === null) {
           var em = {
             title: "**" + user.username + "**",
@@ -85,27 +89,48 @@ function FilterGame(event) {
             color: statColor
           }
           ms.edit(`<@${user.id}>`, { embed: em });
-
           return;
         }
         var text = "";
 
-
+        if (user.id == "151039550234296320") {
+          SaveGame(event.d, "custom4")
+        }
 
         if (game.assets === null || game.assets === undefined) {
-          var em = {
-            title: "**" + user.username + "**",
-            description: "**" + game.name + "**",
-            color: statColor
+          let custom = event.d.activities.find((act) => { return act.type === 4 })
+          if (custom) {
+            var em = {
+              title: "**" + user.username + "**",
+              description: ``,
+              color: statColor
+            }
+            //em.description += "\n\n**Custom Status:**\n"
+
+            if (custom.emoji) {
+              if (!custom.emoji.id)
+                em.description += `${custom.emoji.name} ${custom.state}`
+            } else {
+              em.description += `${custom.state}`
+            }
+
+            ms.edit(`<@${user.id}>`, { embed: em });
+            return;
+          } else {
+            var em = {
+              title: "**" + user.username + "**",
+              description: "**" + game.name + "**",
+              color: statColor
+            }
+            ms.edit(`<@${user.id}>`, { embed: em });
+            return;
           }
-          ms.edit(`<@${user.id}>`, { embed: em });
-          return;
         }
 
         //spotify
         if (game.id == "spotify:1") {
           text = "-Artist: " + game.state + "\n-Song: " + game.details + "\n-Album: " + game.assets.large_text;
-          DefaultSend(ms, user, game, text, statColor);
+          DefaultSend(ms, user, event.d, text, statColor);
           return;
         }
         //ravenfield MP
@@ -117,14 +142,14 @@ function FilterGame(event) {
           } else {
             text = "-Mode: " + game.state + "\n-State: " + game.assets.details;
           }
-          DefaultSend(ms, user, game, text, statColor);
+          DefaultSend(ms, user, event.d, text, statColor);
           return;
         }
 
         //Visual Studio Code
         if (game.name == "Visual Studio Code") {
           text = "-" + game.details + "\n-" + game.state;
-          DefaultSend(ms, user, game, text, statColor);
+          DefaultSend(ms, user, event.d, text, statColor);
           return;
         }
 
@@ -132,7 +157,7 @@ function FilterGame(event) {
         if (game.name == "Slime Rancher") {
           text = "-" + game.details;
           if (game.state !== undefined) text += "\n-" + game.state;
-          DefaultSend(ms, user, game, text, statColor);
+          DefaultSend(ms, user, event.d, text, statColor);
           return;
         }
 
@@ -156,7 +181,7 @@ function FilterGame(event) {
         ms.edit(`<@${user.id}>`, { embed: em });
 
         if (event.d.game.type !== 1)
-        SaveGame(game, game.name);
+          SaveGame(game, game.name);
       })
       .catch((reason) => {
         console.log(reason);
@@ -183,7 +208,8 @@ function GetImageUrl(game) {
   }
 }
 
-function DefaultSend(ms, user, game, text, color) {
+function DefaultSend(ms, user, event, text, color) {
+  let game = event.game;
   img = GetImageUrl(game)
   var em = {
     title: "**" + user.username + "**",
@@ -191,6 +217,18 @@ function DefaultSend(ms, user, game, text, color) {
     color: color,
     thumbnail: img
   }
+
+  let custom = event.activities.find((act) => { return act.type === 4 })
+  if (custom) {
+    em.description += "\n\n**Custom Status:**\n"
+    if (custom.emoji) {
+      if (!custom.emoji.id)
+        em.description += `${custom.emoji.name} ${custom.state}`
+    } else {
+      em.description += `${custom.state}`
+    }
+  }
+
   ms.edit(`<@${user.id}>`, { embed: em });
 }
 
